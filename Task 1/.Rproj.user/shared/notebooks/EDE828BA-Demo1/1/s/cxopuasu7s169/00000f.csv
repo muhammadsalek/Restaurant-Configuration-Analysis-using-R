@@ -1,0 +1,6 @@
+"0","# Best-rated restaurant configuration"
+"0","best_config <- df_selected %>% filter(Avg_Rating == max(Avg_Rating))"
+"0",""
+"0","# Worst-rated restaurant configuration"
+"0","worst_config <- df_selected %>% filter(Avg_Rating == min(Avg_Rating))"
+"0",""

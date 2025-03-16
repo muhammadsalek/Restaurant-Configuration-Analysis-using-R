@@ -1,0 +1,58 @@
+---
+title: "Restaurant Ratings Analysis"
+author: "MD Salek Miah, Statistics(2/2) at SUST"
+date: "`r Sys.Date()`"
+output:
+  word_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(readxl)
+library(dplyr)
+```
+
+## Introduction
+
+This report analyzes restaurant ratings based on various factors such as cuisine type, price, distance, and service model. It identifies the best and worst restaurant configurations based on the average ratings from Talal, Ahmeed, and Omar.
+
+## Data Import and Processing
+
+```{r data_import}
+# Define file path
+file_path <- "D:\\Shihab vai work\\Dataset\\user_data.xlsx"
+
+# Read data from the Ratings sheet
+df <- read_excel(file_path, sheet = "Ratings")
+
+# Select relevant columns
+df_selected <- df %>% select(Cuisine, Price, Distance, Service, Talal, Ahmeed, Omar)
+
+# Compute the average rating
+df_selected <- df_selected %>% mutate(Avg_Rating = rowMeans(select(., Talal, Ahmeed, Omar), na.rm = TRUE))
+```
+
+## Best and Worst Restaurant Configurations
+
+```{r best_worst}
+# Find best and worst configurations
+best_config <- df_selected %>% filter(Avg_Rating == max(Avg_Rating))
+worst_config <- df_selected %>% filter(Avg_Rating == min(Avg_Rating))
+```
+
+### Best Configuration
+
+```{r display_best}
+best_config
+```
+
+### Worst Configuration
+
+```{r display_worst}
+worst_config
+```
+
+## Conclusion
+
+This report identifies the best and worst restaurant configurations based on customer ratings. The highest-rated configurations provide insights into favorable restaurant setups, while the lowest-rated configurations highlight potential areas for improvement.

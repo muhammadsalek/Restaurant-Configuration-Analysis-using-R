@@ -1,25 +1,20 @@
 #### Load necessary library####
 
-
-# Install and load required libraries
-install_and_load("readxl")
-install_and_load("dplyr")
-
 install.packages("readxl")
-library(readxl)
-
-
 install.packages("dplyr")
+# Load necessary libraries
+library(readxl)
 library(dplyr)
+
 # Read the dataset
 file_path <- "D:\\Shihab vai work\\Dataset\\user_data.xlsx"
 df <- read_excel(file_path, sheet = "Ratings")
 
-# Select relevant columns (Cuisine, Price, Distance, Service, Talal, Ahmeed)
-df_selected <- df %>% select(Cuisine, Price, Distance, Service, Talal, Ahmeed)
+# Select relevant columns (Cuisine, Price, Distance, Service, Talal, Ahmeed, Omar)
+df_selected <- df %>% select(Cuisine, Price, Distance, Service, Talal, Ahmeed, Omar)
 
-# Compute the average rating for Talal and Ahmeed
-df_selected <- df_selected %>% mutate(Avg_Rating = rowMeans(select(., Talal, Ahmeed), na.rm = TRUE))
+# Compute the average rating for Talal, Ahmeed, and Omar
+df_selected <- df_selected %>% mutate(Avg_Rating = rowMeans(select(., Talal, Ahmeed, Omar), na.rm = TRUE))
 
 # Find the best configuration (highest rating)
 best_config <- df_selected %>% filter(Avg_Rating == max(Avg_Rating))
@@ -40,26 +35,73 @@ print(worst_config)
 
 
 
+# ==============================================
+#  Restaurant Ratings Analysis
+#  Author: MD Salek Miah, Statistics (2/2) at SUST
+#  Date: Sys.Date()
+# ==============================================
 
+# === Load Required Libraries ===
+library(readxl)       # For reading Excel files
+library(dplyr)        # For data manipulation
+library(ggplot2)      # For visualization
+library(kableExtra)   # For professional table formatting
+install.packages("kableExtra")
+install.packages("ggplot2")
+# === Step 1: Import the Data ===
+file_path <- "D:\\Shihab vai work\\Dataset\\user_data.xlsx"  # Define file path
+data <- read_excel(file_path, sheet = "Ratings")            # Read the data
 
+# Select relevant columns
+data_selected <- data %>%
+  select(Cuisine, Price, Distance, Service, Talal, Ahmeed, Omar)
 
+# Compute average rating per restaurant configuration
+data_selected <- data_selected %>%
+  mutate(Avg_Rating = rowMeans(select(., Talal, Ahmeed, Omar), na.rm = TRUE))
 
+# === Step 2: Identify Best & Worst Configurations ===
+best_config <- data_selected %>% filter(Avg_Rating == max(Avg_Rating))
+worst_config <- data_selected %>% filter(Avg_Rating == min(Avg_Rating))
 
+# === Step 3: Display Best & Worst Configurations ===
+cat("\n\n=== Best Restaurant Configuration ===\n")
+print(best_config)
 
+cat("\n\n=== Worst Restaurant Configuration ===\n")
+print(worst_config)
 
+# === Step 4: Summary Insights ===
+cat("\n\n=== Key Findings ===\n")
+cat("✅ Best Configuration: ", best_config$Cuisine, 
+    "| Price: $", best_config$Price, 
+    "| Distance:", best_config$Distance, "km", 
+    "| Service:", best_config$Service, 
+    "| Avg Rating:", round(best_config$Avg_Rating, 2), "\n")
 
+cat("❌ Worst Configuration: ", worst_config$Cuisine, 
+    "| Price: $", worst_config$Price, 
+    "| Distance:", worst_config$Distance, "km", 
+    "| Service:", worst_config$Service, 
+    "| Avg Rating:", round(worst_config$Avg_Rating, 2), "\n")
 
+# === Step 5: Visual Representation of Ratings ===
+ggplot(data_selected, aes(x = Avg_Rating)) +
+  geom_histogram(fill = "steelblue", color = "white", bins = 10) +
+  labs(title = "Distribution of Average Restaurant Ratings", 
+       x = "Average Rating", y = "Count") +
+  theme_minimal()
 
+# === Step 6: Business Recommendations ===
+cat("\n\n=== Business Recommendations ===\n")
+cat("🔹 Consider offering", best_config$Service, 
+    "for", best_config$Cuisine, "cuisine to maintain high ratings.\n")
+cat("🔹 Avoid", worst_config$Service, 
+    "for", worst_config$Cuisine, "cuisine as it received poor ratings.\n")
+cat("🔹 Optimize pricing & service quality based on customer expectations.\n")
+cat("🔹 Conduct further research on customer preferences and seasonal trends.\n")
 
-
-
-
-
-
-
-
-
-
-
-
-
+# === Step 7: Final Remarks ===
+cat("\n\n=== Final Remarks ===\n")
+cat("✅ This report provides data-driven insights into restaurant configurations.\n")
+cat("✅ Further analysis on location-based preferences and predictive modeling is recommended.\n")

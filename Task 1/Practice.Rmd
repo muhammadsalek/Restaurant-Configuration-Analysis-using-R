@@ -1,0 +1,76 @@
+---
+title: "Restaurant Ratings Analysis"
+author: "MD Salek Miah, Statistics(2/2) at SUST"
+date: "`r Sys.Date()`"
+output:
+  word_document:
+    reference_docx: custom_styles.docx
+  pdf_document: default
+---
+
+## Introduction
+
+This report analyzes restaurant ratings based on various factors such as cuisine type, price, distance, and service model. It identifies the best and worst restaurant configurations based on the average ratings from Talal, Ahmeed, and Omar.
+
+## Data Import and Processing
+
+```{r}
+library(readxl)
+library(dplyr)
+library(knitr)
+library(kableExtra)
+library(ggplot2)
+
+# Define file path
+file_path <- "D:\\Shihab vai work\\Dataset\\user_data.xlsx"
+
+# Read data from the "Ratings" sheet
+df <- read_excel(file_path, sheet = "Ratings")
+
+# Select relevant columns
+df_selected <- df %>% select(Cuisine, Price, Distance, Service, Talal, Ahmeed, Omar)
+
+# Compute the average rating
+df_selected <- df_selected %>% mutate(Avg_Rating = rowMeans(select(., Talal, Ahmeed, Omar), na.rm = TRUE))
+```
+
+## Best and Worst Restaurant Configurations
+
+```{r}
+# Best-rated restaurant configuration
+best_config <- df_selected %>% filter(Avg_Rating == max(Avg_Rating))
+
+# Worst-rated restaurant configuration
+worst_config <- df_selected %>% filter(Avg_Rating == min(Avg_Rating))
+
+```
+
+## Best Configuration
+
+```{r}
+best_config %>% 
+  kable() %>% 
+  kable_styling(full_width = FALSE, bootstrap_options = c("striped", "hover", "condensed"))
+
+```
+
+## Worst Configuration
+
+```{r}
+worst_config %>% 
+  kable() %>% 
+  kable_styling(full_width = FALSE, bootstrap_options = c("striped", "hover", "condensed"))
+
+```
+
+
+# Save the plot
+ggsave("histogram_plot.png", width = 6, height = 4, units = "in")
+
+```
+
+## Conclusion
+
+This analysis determines the most and least favored restaurant arrangements based on customer ratings submitted by Talal, Ahmeed, and Omar. Through comparison of their personal ratings:
+
+Talal's ratings indicate favoring [specific aspects he appreciates, e.g., "lower prices and faster service"]. Ahmeed's ratings tend to perform better on [specific areas he prefers, e.g., "cuisines with different menus and better service quality"]. Omar's ratings highlight [mention any unique factors based on his ratings, e.g., "value for money and authenticity in food"].

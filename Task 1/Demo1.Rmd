@@ -1,0 +1,110 @@
+---
+title: "Restaurant Ratings Analysis"
+author: "MD Salek Miah, Statistics(2/2) at SUST"
+date: "`r Sys.Date()`"
+output:
+  html_document: default
+---
+
+# Introduction
+
+This report analyzes restaurant ratings based on various factors such as cuisine type, price, distance, and service model. It identifies the best and worst restaurant configurations based on the average ratings from Talal, Ahmeed, and Omar.
+
+## Data Import and Processing
+
+```{r}
+library(readxl)
+library(dplyr)
+library(knitr)
+library(kableExtra)
+library(ggplot2)
+
+# Define file path
+file_path <- "D:\\Shihab vai work\\Dataset\\user_data.xlsx"
+
+# Read data from the "Ratings" sheet
+df <- read_excel(file_path, sheet = "Ratings")
+
+# Select relevant columns
+df_selected <- df %>% select(Cuisine, Price, Distance, Service, Talal, Ahmeed, Omar)
+
+# Compute the average rating
+df_selected <- df_selected %>% mutate(Avg_Rating = rowMeans(select(., Talal, Ahmeed, Omar), na.rm = TRUE))
+
+```
+
+## Best and Worst Restaurant Configurations
+
+```{r}
+# Best-rated restaurant configuration
+best_config <- df_selected %>% filter(Avg_Rating == max(Avg_Rating))
+
+# Worst-rated restaurant configuration
+worst_config <- df_selected %>% filter(Avg_Rating == min(Avg_Rating))
+
+```
+
+## Best Configuration
+
+```{r}
+best_config %>% 
+  kable() %>% 
+  kable_styling(full_width = FALSE, bootstrap_options = c("striped", "hover", "condensed"))
+
+```
+
+## Worst Configuration
+
+```{r}
+worst_config %>% 
+  kable() %>% 
+  kable_styling(full_width = FALSE, bootstrap_options = c("striped", "hover", "condensed"))
+
+```
+
+## Visual Representation of Ratings
+
+### Distribution of Average Ratings
+
+```{r}
+ggplot(df_selected, aes(x = Avg_Rating)) +
+  geom_histogram(fill = "#FF6F61", color = "white", bins = 15, alpha = 0.8) + 
+  labs(
+    title = "Distribution of Average Restaurant Ratings",
+    subtitle = "A Histogram of Restaurant Ratings Across Different Cuisines",
+    x = "Average Rating", 
+    y = "Frequency"
+  ) +
+  theme(
+    plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
+    plot.subtitle = element_text(size = 12, face = "italic", hjust = 0.5),
+    axis.title = element_text(size = 14, face = "bold"),
+    axis.text = element_text(size = 12),
+    panel.background = element_blank(),
+    panel.grid.major = element_line(color = "gray90", linewidth = 0.5),
+    panel.grid.minor = element_blank(),
+    plot.background = element_rect(fill = "white", color = "white")
+  ) +
+  scale_x_continuous(breaks = seq(0, 5, by = 0.5)) +
+  scale_y_continuous(labels = scales::comma) +
+  theme_minimal()
+
+
+
+```
+
+## Key Findings
+
+✅ Best Configuration:
+
+The best-rated restaurant is the best_config$Cuisine cuisine, priced at best_config$Price, with a best_config$Service service model. This configuration received the highest average rating of round(best_config$Avg_Rating, 2).
+
+✅ Worst Configuration:
+
+The worst-rated restaurant is the worst_config$Cuisine cuisine, priced at worst_config$Price, with a worst_config$Service service model. This configuration received the lowest average rating of round(worst_config$Avg_Rating, 2).
+
+## Conclusion
+
+This analysis determines the most and least favored restaurant arrangements based on customer ratings submitted by Talal, Ahmeed, and Omar. Through comparison of their personal ratings:
+
+Talal's ratings indicate favoring [particular arrangements or aspects he appreciates, e.g., "lower prices and faster service.""] Ahmeed tends to perform better on [specific areas he likes, i.e., "cuisines with different menus and better service quality."] Omar likes [mention any unique factors based on his ratings, e.g., "value for money and authenticity in food"]. The highly rated sets, according to the combined ratings of all three, give valuable information on the most preferable restaurant settings, while the lowest rated sets indicate where one can improve. These ratings by Talal, Ahmeed, and Omar are a total guide to understanding customer preferences, which will be instrumental in enhancing restaurant offerings for maximum satisfaction.
